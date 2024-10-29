@@ -3,6 +3,7 @@ import dotenv from "dotenv";
 dotenv.config();
 
 const app = async () => {
+
   try {
     const server = new Server();
     await server.dbConnect();
