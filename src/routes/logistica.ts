@@ -30,6 +30,7 @@ router.get("/descargarExcelSGA", async (req, res) => {
         Componente_SAP: {
           [Op.notIn]: ["1002950", "1053621", "4068259"]
         },
+      
       }
     });
 
