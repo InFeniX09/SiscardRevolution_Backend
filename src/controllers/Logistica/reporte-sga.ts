@@ -1,6 +1,6 @@
 import { Request, Response, request, response } from "express";
 import ExcelJS from 'exceljs';
-import VW_CONSULTA379_Test from "src/models/DWH/views/VW_CONSULTA379_Test";
+import VW_CONSULTA379_Test from "../../models/DWH/views/VW_CONSULTA379_Test";
 
 export const descargarReporteSGA = async (req: Request, res:Response) => {
     try {
