@@ -4,10 +4,7 @@
   "description": "",
   "main": "index.js",
   "scripts": {
-<<<<<<< HEAD
     "start": "nodemon dist/index.js",
-=======
->>>>>>> parent of 203b70d (actualizacion grande)
     "test": "echo \"Error: no test specified\" && exit 1"
   },
   "keywords": [],
@@ -29,6 +26,7 @@
     "simple-node-logger": "^21.8.12",
     "socket.io": "^4.7.5",
     "tedious": "^16.4.0",
+    "typescript": "^5.6.3",
     "underscore": "^1.13.6",
     "xlsx": "^0.18.5"
   },

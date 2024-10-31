@@ -8,21 +8,17 @@ import {
   listarDatosPdfAlbaranSalida,
   listarDetalleAlbaranSalida,
 } from "../controllers/Logistica/guia-remision";
-<<<<<<< HEAD
 import { descargarReporteSGA } from "../controllers/Logistica/reporte-sga";
 import Reporte_logistica_claro from "../models/DWH/views/Reporte_logistica_claro";
 import { Op } from "sequelize";
 const express = require("express");
 const ExcelJS = require("exceljs");
-=======
->>>>>>> parent of 203b70d (actualizacion grande)
 const router = Router();
 router.get("/listarAlmacenxAlbaranSalida", listarAlmacenxAlbaranSalida);
 router.get("/listarAlbaranes", listarAlbaranes);
 router.post("/listarDetalleAlbaranSalida", listarDetalleAlbaranSalida);
 router.post("/listarDatosPdfAlbaranSalida", listarDatosPdfAlbaranSalida);
 router.post("/listarAlbaranSalidaxZona", listarAlbaranSalidaxZona);
-<<<<<<< HEAD
 
 router.get("/descargarReporteSGA", descargarReporteSGA);
 router.get("/descargarExcelSGA", async (req, res) => {
@@ -75,8 +71,6 @@ router.get("/descargarExcelSGA", async (req, res) => {
   }
 });
 
-=======
->>>>>>> parent of 203b70d (actualizacion grande)
 // Ruta para generar el PDF
 // Ruta para generar el PDF
 router.post("/generar-pdf", async (req, res) => {
