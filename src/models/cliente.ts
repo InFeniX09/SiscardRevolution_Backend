@@ -12,6 +12,9 @@ const Cliente = db[0].define(
     CodCliente: {
       type: DataTypes.STRING,
     },
+    DescripcionCliente: {
+      type: DataTypes.STRING,
+    },
     Estado_id: {
       type: DataTypes.STRING,
     },

@@ -24,9 +24,6 @@ const Solicitud = db[0].define(
     Estado_id: {
       type: DataTypes.STRING,
     },
-    Cliente_id: {
-      type: DataTypes.INTEGER,
-    },
     UltimaFechMod: {
       type: DataTypes.DATE,
     },

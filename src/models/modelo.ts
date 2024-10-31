@@ -12,12 +12,9 @@ const Modelo = db[0].define(
     Modelo: {
       type: DataTypes.STRING,
     },
-    Marca_id: {
-      type: DataTypes.STRING,
-    },
     Estado_id: {
       type: DataTypes.STRING,
-    }
+    },
   },
   {
     freezeTableName: true,

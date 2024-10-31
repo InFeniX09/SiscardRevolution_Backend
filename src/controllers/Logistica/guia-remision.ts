@@ -22,7 +22,6 @@ export const listarAlmacenxAlbaranSalida = async (
   if (Query3) {
     try {
       console.log(Query3);
-
       return res.status(200).json({
         ok: true,
         msg: "Informacion Correcta",

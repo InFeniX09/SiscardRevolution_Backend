@@ -10,8 +10,7 @@ import EquipoStock from "../../models/equipostock";
 import EquipoSerie from "../../models/equiposerie";
 import EquipoControl from "../../models/equipocontrol";
 import { where } from "underscore";
-import Area from "../../models/area";
-import Estado from "../../models/estado";
+
 
 export const listarClasificacionEquipoSocket = async () => {
   const Query3 = await TipoEquipo.findAll({
@@ -47,14 +46,20 @@ export const listarTipoEquipoxClSocket = async (data: any) => {
   return Query3;
 };
 export const listarMarcaSocket = async () => {
-  Marca.belongsTo(TipoEquipo, { foreignKey: "IdTipoEquipo" });
+  Marca.belongsTo(TipoEquipo, { foreignKey: "TipoEquipo_id" });
   const Query3 = await Marca.findAll({
     raw: true,
-    attributes: ["IdMarca", "Marca", "Estado_id"],
+    attributes: [
+      "IdMarca",
+      "TipoEquipo.Clasificacion",
+      "TipoEquipo.TipoEquipo",
+      "Marca",
+      "Estado_id",
+    ],
     include: [
       {
         model: TipoEquipo,
-        attributes: ["TipoEquipo"],
+        attributes: [],
         required: true,
       },
     ],
@@ -66,7 +71,7 @@ export const listarMarcaSocket = async () => {
 };
 export const listarModeloSocket = async () => {
   Modelo.belongsTo(Marca, { foreignKey: "Marca_id" });
-  Marca.belongsTo(TipoEquipo, { foreignKey: "IdTipoEquipo" });
+  Marca.belongsTo(TipoEquipo, { foreignKey: "TipoEquipo_id" });
   const Query3 = await Modelo.findAll({
     raw: true,
     attributes: [
@@ -106,21 +111,18 @@ export const crearTipoEquipoSocket = async (data: any) => {
 };
 export const crearMarcaSocket = async (data: any) => {
   const Query0 = await Marca.findOne({
-    where: { Marca: data.Marca, IdTipoEquipo: data.TipoEquipo },
+    where: { Marca: data.Marca, TipoEquipo_id: data.TipoEquipo },
   });
   if (Query0) {
     return { msg: "Existe" };
   } else {
     const Query3 = await Marca.create({
       Marca: data.Marca,
-      IdTipoEquipo: data.TipoEquipo,
-      Estado_id: "1",
+      TipoEquipo_id: data.TipoEquipo,
     });
     return { msg: "NoExiste", data: Query3 };
   }
 };
-
-
 export const crearModeloSocket = async (data: any) => {
   const Query0 = await Modelo.findOne({
     where: { Modelo: data.Modelo, Marca_id: data.Marca },
@@ -128,53 +130,30 @@ export const crearModeloSocket = async (data: any) => {
   if (Query0) {
     return { msg: "Existe" };
   } else {
-    let cuotas = +data.Cuotas;
     const Query3 = await Modelo.create({
       Modelo: data.Modelo,
       Marca_id: data.Marca,
     });
-    let precioInicial = +data.Costo;
-    let precioFinal = precioInicial * cuotas;
-
-    const Buscar = await Modelo.findOne({
-      attributes: ["IdModelo"],
-      where: {
-        Modelo: data.Modelo,
-        Marca_id: data.Marca,
-      },
-    });
-
-    let idModelo = Buscar?.dataValues.IdModelo
-
-    for (let i = 1; i <= cuotas; i++) {
-      EquipoDescuento.create({
-        Modelo_id: idModelo,
-        Tiempo: i,
-        Precio: precioFinal
-      });
-      precioFinal = precioFinal - precioInicial;
-    }
-    return { msg: "TODO OK" };
+    return { msg: "NoExiste", data: Query3 };
   }
 };
 export const crearEquipoSocket = async (data: any) => {
-  console.log("datos traidos del form", data);
   const Query0 = await Equipo.findOne({
     where: {
-      equipo_imei: data.Imei,
+      Cliente_id: data.Cliente,
+      Modelo_id: data.Modelo,
+      Area_id: data.Area,
     },
   });
   if (Query0) {
     return { msg: "Existe" };
   } else {
     const Query3 = await Equipo.create({
-      //data para agregar nuevo equipo
-      id_marca: data.Marca,
-      id_modelo: data.Modelo,
-      equipo_imei: data.Imei,
-      id_area: data.Area,
-      id_cliente: data.Cliente,
-      id_estado: "7",
+      Cliente_id: data.Cliente,
+      Modelo_id: data.Modelo,
+      Area_id: data.Area,
+      Especificacion: data.Especificacion,
+      Gamma: data.Gamma,
     });
 
     return { msg: "NoExiste", data: Query3 };
@@ -278,90 +257,49 @@ export const crearEquipoStockSocket = async (data: any) => {
   }
 };
 export const listarEquipoSocket = async () => {
-  Equipo.belongsTo(Cliente, { foreignKey: "id_cliente" });
-  Equipo.belongsTo(Modelo, { foreignKey: "id_modelo" });
-  Equipo.belongsTo(Marca, { foreignKey: "id_marca" });
-  Equipo.belongsTo(Area, { foreignKey: "id_area" });
-  Equipo.belongsTo(Estado, { foreignKey: "id_estado" });
+  Equipo.belongsTo(Cliente, { foreignKey: "Cliente_id" });
+  Equipo.belongsTo(Modelo, { foreignKey: "Modelo_id" });
+  Modelo.belongsTo(Marca, { foreignKey: "Marca_id" });
+  Marca.belongsTo(TipoEquipo, { foreignKey: "TipoEquipo_id" });
 
   const Query3 = await Equipo.findAll({
-    attributes: ["id_equipo", "equipo_imei", "id_entidad"],
+    raw: true,
+    attributes: [
+      "IdEquipo",
+      "Modelo.Marca.Marca",
+      "Modelo.Modelo",
+      "Cliente.CodCliente",
+      "Especificacion",
+      "Gamma",
+      "Estado_id",
+    ],
     include: [
       {
         model: Modelo,
-        attributes: ["Modelo"],
+        attributes: [],
         required: true,
+        include: [
+          {
+            model: Marca,
+            attributes: [],
+            required: true,
+            include: [{ model: TipoEquipo, attributes: [], required: true }],
+          },
+        ],
       },
       {
         model: Cliente,
-        attributes: ["CodCliente"],
-        required: true,
-      },
-      {
-        model: Marca,
-        attributes: ["Marca"],
-        required: true,
-      },
-      {
-        model: Area,
-        attributes: ["Area"],
-        required: true,
-      },
-      {
-        model: Estado,
-        attributes: ["CortoEstado"],
+        attributes: [],
         required: true,
       },
     ],
-  });
-
-  const results = Query3.map((result) => {
-    const plainResult = result.get({ plain: true });
-    return {
-      ...plainResult,
-      id_equipo: plainResult.id_equipo,
-      equipo_imei: plainResult.equipo_imei,
-      Marca: plainResult.Marca.Marca,
-      Modelo: plainResult.Modelo.Modelo,
-      Estado: plainResult.Estado.CortoEstado,
-
-      Area: plainResult.Area.Area,
-      Cliente: plainResult.Cliente.CodCliente,
-    };
-  });
-
-  return results;
-};
-
-export const listarDescuentoSocket = async (data: number) => {
-  EquipoDescuento.belongsTo(Equipo, { foreignKey: "Modelo_id" });
-
-  const Query3 = await EquipoDescuento.findAll({
-    attributes: ["IdEquipoDescuento", "Tiempo", "Precio"],
     where: {
-      Modelo_id: data,
+      Estado_id: "1",
     },
-    order: [["Tiempo", "ASC"]]
   });
-
-  /*const results = Query3.map((result) => {
-    const plainResult = result.get({ plain: true });
-    return {
-      ...plainResult,
-      id_equipo: plainResult.id_equipo,
-      equipo_imei: plainResult.equipo_imei,
-      Marca: plainResult.Marca.Marca,
-      Modelo: plainResult.Modelo.Modelo,
-      Estado: plainResult.Estado.CortoEstado,
-
-      Area: plainResult.Area.Area,
-      Cliente: plainResult.Cliente.CodCliente,
-    };
-  });*/
 
   return Query3;
 };
-
 export const listarEquipoxClxTCSocket = async (data: any) => {
   Equipo.belongsTo(Cliente, { foreignKey: "Cliente_id" });
   Equipo.belongsTo(Modelo, { foreignKey: "Modelo_id" });
@@ -545,7 +483,7 @@ export const listarModeloxMarca = async () => {
 };
 
 export const listarMarcaXTipoEquipo = async (data: any) => {
-  Marca.belongsTo(TipoEquipo, { foreignKey: "IdTipoEquipo" });
+  Marca.belongsTo(TipoEquipo, { foreignKey: "TipoEquipo_id" });
 
   const Query3 = await Marca.findAll({
     raw: true,
@@ -565,7 +503,7 @@ export const listarMarcaXTipoEquipo = async (data: any) => {
     ],
     where: {
       Estado_id: "1",
-      IdTipoEquipo: data.TipoEquipo,
+      TipoEquipo_id: data.TipoEquipo,
     },
   });
 
@@ -600,12 +538,7 @@ export const listarEquipoXAreaXClienteXTipoEquipo = async (data: any) => {
 
   const Query3 = await Equipo.findAll({
     raw: true,
-    attributes: [
-      "IdEquipo",
-      "Modelo.Marca.Marca",
-      "Modelo.Modelo",
-      "Estado_id",
-    ],
+    attributes: ["IdEquipo", "Modelo.Marca.Marca", "Modelo.Modelo", "Estado_id"],
     include: [
       {
         model: Modelo,
