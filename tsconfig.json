@@ -109,11 +109,7 @@
   },
   "include": [
     "src/**/*.ts",
-    "assets/**/*.png"
-<<<<<<< HEAD
-, "src/prueba.js"  ]
-}
-=======
+    "assets/**/*.png",
+    "src/prueba.js"  
   ]
 }
->>>>>>> parent of 203b70d (actualizacion grande)
