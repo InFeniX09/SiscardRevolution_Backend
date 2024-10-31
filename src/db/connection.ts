@@ -1,18 +1,18 @@
 import { Sequelize } from "sequelize";
+
 export const db: Sequelize[] = [];
-import dotenv from "dotenv";
-dotenv.config();
 
 const SiscardRevolution = new Sequelize(
-  process.env.NombreBD1 || "",
-  process.env.UsuarioBD1 || "",
-  process.env.ClaveBD1 || "",
-
+  "SiscardRevolutionTest",
+  "sa",
+  "S1sc4rd#01",
   {
     dialect: "mssql",
-    host: process.env.IpBD1 || "",
+    host: "172.17.7.39",
     port: 1433,
-    dialectOptions: {},
+    dialectOptions: {
+     
+    },
   }
 );
 
@@ -26,11 +26,6 @@ export const connect = async () => {
     await SiscardRevolution.authenticate();
     console.log("Base de datos SiscardRevolution online");
   } catch (error) {
-    console.log('yara',process.env.NombreBD1)
-    console.log('yara',process.env.UsuarioBD1)
-    console.log('yara',process.env.ClaveBD1)
-    console.log('yara',process.env.IpBD1)
-
     console.log("Base de datos SiscardRevolution offline");
     throw error;
   }
