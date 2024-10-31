@@ -8,7 +8,6 @@ import {
   listarDetalleAlbaranSalida,
 } from "../controllers/Logistica/guia-remision";
 import { descargarReporteSGA } from "../controllers/Logistica/reporte-sga";
-import VW_CONSULTA379_Test from "../models/DWH/views/VW_CONSULTA379_Test";
 import Reporte_logistica_claro from "../models/DWH/views/Reporte_logistica_claro";
 import { Op } from "sequelize";
 const express = require("express");
