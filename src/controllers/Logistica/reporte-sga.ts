@@ -4,6 +4,7 @@ import VW_CONSULTA379_Test from "src/models/DWH/views/VW_CONSULTA379_Test";
 
 export const descargarReporteSGA = async (req: Request, res:Response) => {
     try {
+      //pepeito
       // 1. Realiza la consulta a la base de datos con Sequelize
       const resultados = await VW_CONSULTA379_Test.findAll({
         // Puedes agregar filtros si es necesario
